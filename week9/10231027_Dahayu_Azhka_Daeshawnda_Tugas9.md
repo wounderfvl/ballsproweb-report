@@ -1,4 +1,4 @@
-# Laporan Progres Mingguan - [Nama Proyek]
+# Laporan Progres Mingguan - BALLS (Borneo Anfield Loyalty System)
 
 **Kelompok**: A9  
 **Mitra**: Borneo Anfield Stadium
@@ -38,6 +38,17 @@ Pada minggu ini, tim telah melakukan proses requirement gathering bersama mitra,
   menyiapkan rencana testing awal
 - **Dahayu Azhka Daeshawnda**: Menentukan struktur folder frontend, setup environment Next.js
 - **Khanza Nabilla Tsabita**: Menentukan struktur folder backend
+
+### Timeline, Feature, Database Design, Architecture Design
+
+**Timeline**
+Berikut link timeline kami: https://docs.google.com/spreadsheets/d/1HkWPG1wID4fMBhbVtagwO03GGfKPLudohc3OYjCfEHA/edit?usp=sharing
+
+**Feature & Database Design**
+Berikut link Feature & Database Design kami: https://docs.google.com/document/d/1p7_iXO4fMiZ6qi9EXm3n3DTRhaC4MeZfgmBQ1Ilwi_s/edit?usp=sharing
+
+**Architecture Design**
+Berikut link Architecture Design Design kami: https://drive.google.com/file/d/1RN6v8mBu_L8-WDjcRuT9kZDgpnaYNt_e/view?usp=sharing
 
 ### Wireframe / Mockup
 
