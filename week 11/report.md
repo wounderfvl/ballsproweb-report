@@ -13,46 +13,64 @@
 Pada minggu ke-11, tim fokus pada authentication dan authorization menggunakan Token Based Authentication (JWT), dan juga pengujian satu fitur pada aplikasi langsung.
 Pada laporan ini juga melampirkan progress dari minggu 10 yang tidak tersampaikan seperti Desain ERD, pembuatan kerangka awal backend (REST API skeleton), dan penyiapan struktur frontend dasar.
 
+Berikut beberapa pencapaian untuk di minggu ini:
+1. **Authentication System**
+    Dalam autentikasi disini kami mengimplementasikan 3 level user yaitu Super Admin, Admin. dan customer. Kemudian kami juga telah membuat sistem login yang terpisah untuk masing-masing level user tersebut.
+
+2. **Booking Lapangan**
+    Sesuai dengan salah satu kebutuhan mitra yaitu pemesananan lapangan berbasis website, di minggu ini kami mengimplementasikan fitur booking lapangan.
+
 
 ## Accomplished Tasks
 
+1. **Frontend Development**
+  - Menyiapkan struktur frontend dasar (routing, halaman login/register)
+  - Halaman Login dan register
+  - Integrasi API
 
-- Merancang skema database sesuai kebutuhan aplikasi
-- Mengimplementasikan struktur database di PostgreSQL
-- Membuat REST API skeleton dengan endpoint dasar
-- Menyiapkan struktur frontend dasar (routing, halaman login/register)
-- Melakukan demo progres ke mitra dan mendapatkan masukan awal
+2. **Backend Development**
+  - Mengimplementasikan struktur database di PostgreSQL
+  - Setup struktur project backend dengan arsitektur modular (controllers, models, routes)
+  - Implementasi sistem autentikasi berbasis JWT untuk user dan admin
+  - Perancangan dan integrasi database PostgreSQL (tabel: users, fields, bookings, payments, dll)
+  - Pengembangan endpoint booking lapangan dengan validasi ketersediaan waktu
+  - Pengelolaan error dan validasi input menggunakan middleware custom
+
+3. **Database & API**
+  - Merancang skema database sesuai kebutuhan aplikasi
+  - Membuat REST API skeleton dengan endpoint dasar
+  - Melakukan demo progres ke mitra dan mendapatkan masukan awal
 
 
 ## Challenges & Solutions
 
-
-- **Challenge 1**: Penentuan relasi antar tabel pada skema database cukup kompleks
+1. **Authentication System**
+- **Challenge**: Penentuan relasi antar tabel pada skema database cukup kompleks
  - **Solution**: Diskusi tim secara intensif dan konsultasi dengan mitra untuk validasi kebutuhan data
-- **Challenge 2**: Integrasi antara backend dan frontend masih belum sepenuhnya berjalan lancar
+- **Challenge**: Integrasi antara backend dan frontend masih belum sepenuhnya berjalan lancar
  - **Solution**: Membuat dokumentasi API yang jelas dan rencana integrasi bertahap untuk minggu berikutnya
 
 
 ## Next Week Plan
 
-
+- Core Feature #2 & #3: Fitur utama kedua dan ketiga
+- UI Enhancement: Perbaikan tampilan dan UX
 - Menyempurnakan struktur database dan menambahkan data dummy
 - Mengembangkan endpoint lanjutan untuk fitur utama
-- Mulai integrasi backend dengan frontend
 
 
 ## Contributions
 
 
-- **Alfian Fadhillah P (PM)**:
+- **Alfian Fadhillah P (PM)**: Menyempurnakan desain UI/UX, Membuat laporan MD
 - **Achmad Bayhaqi (DevOps)**: Dokumentasi API Lengkap, Desain Database (ERD dan Class Diagram) , Integrasi dengan backend dan frontend
-- **Dahayu Azhka Daeshawnda (Frontend)**:
-- **Khanza Nabilla Tsabita (Backend)**:
+- **Dahayu Azhka Daeshawnda (Frontend)**: Frontend development (React components) & State management 
+- **Khanza Nabilla Tsabita (Backend)**: Backend architecture, Resource implementation, dan Authentication system
 
 
 ---
 
-
+### 
 ### Desain ERD
 - https://raw.githubusercontent.com/AchmadLyraa/-prowebdevops/refs/heads/main/ArchitectureDesign-Database%20Design%20-%20ERD.jpg
 
@@ -96,8 +114,6 @@ POST
 - `phone_number` as string
 
 
-
-
 **Response**
 
 
@@ -137,8 +153,6 @@ POST
 
 - `email` as string
 - `password` as string
-
-
 
 
 **Response**
@@ -182,8 +196,6 @@ GET
 
 
 - `Authorization: Bearer <token>`
-
-
 
 
 **Response**
@@ -253,6 +265,119 @@ PUT
  "message": "Profile updated successfully"
 }
 ```
+## Screenshots
+## 1. Sistem Autentikasi
+
+### Login (3 Level user)
+<img src="login.png">
+
+### Register
+<img src="register.png">
+
+### Register (Super admin)
+<img src="Super admin.png">
+
+
+## 2. Core Feature #1
+
+### Create Booking
+<img src="Create Booking.png">
+
+#### Form booking
+
+```tsx
+"use client";
+
+import { useState } from "react";
+
+export default function BookingPage() {
+  const [selectedField, setSelectedField] = useState("");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
+  const [duration, setDuration] = useState(1);
+
+  const fields = [
+    { id: 1, name: "Field A" },
+    { id: 2, name: "Field B" },
+  ];
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert(
+      Booking submitted for Field ${selectedField} on ${date} at ${time} for ${duration} hour(s)
+    );
+  };
+
+  return (
+    <div className="booking-container">
+      <h1>Book a Field</h1>
+      <form onSubmit={handleSubmit} className="booking-form">
+        <div className="form-group">
+          <label>Select Field:</label>
+          <select
+            value={selectedField}
+            onChange={(e) => setSelectedField(e.target.value)}
+            required
+          >
+            <option value="">-- Select a field --</option>
+            {fields.map((field) => (
+              <option key={field.id} value={field.id}>
+                {field.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Date:</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Time:</label>
+          <input
+            type="time"
+            value={time}
+            onChange={(e) => setTime(e.target.value)}
+            required
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Duration (hours):</label>
+          <input
+            type="number"
+            min="1"
+            max="3"
+            value={duration}
+            onChange={(e) => setDuration(Number(e.target.value))}
+            required
+          />
+        </div>
+
+        <button type="submit" className="submit-button">
+          Confirm Booking
+        </button>
+      </form>
+    </div>
+  );
+}
+```
+
+## Screenshots Tampilan Login & Register
+
+<img src="uilogin.png">
+
+<img src="uiregister.png">
+
+<img src="uiwelcome.png">
+
+## 3. Integration Test
 
 
 ----
@@ -277,10 +402,6 @@ PUT
 - **Link Frontend**: [balls-frontdoor](https://github.com/wounderfvl/balls-frontdoor)
 - **Link DevOps**: [prowebdevops](https://github.com/AchmadLyraa/-prowebdevops)
 - **Link Report**: [ballsproweb-report](https://github.com/wounderfvl/ballsproweb-report)
-
-
-
-
 
 
 
