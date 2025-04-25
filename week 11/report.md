@@ -379,8 +379,157 @@ https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/
 
 https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2016.13.09%20(1).jpeg
 
-## 3. Integration Test
+## 3. Kode Integrasi (Fetch API)
+```javascript
+// src/lib/api/auth.js
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
+/**
+ * Register a new user
+ * @param {{ username: string, email: string, password: string, full_name: string, phone_number: string }} data
+ */
+export async function register(data) {
+  const res = await fetch(`${API_URL}/auth/register`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`Register failed: ${res.status}`);
+  return res.json();
+}
+
+/**
+ * Login existing user
+ * @param {{ email: string, password: string }} data
+ */
+export async function login(data) {
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`Login failed: ${res.status}`);
+  return res.json();
+}
+
+
+// src/lib/api/user.js
+const AUTH_API_URL = process.env.NEXT_PUBLIC_API_URL + '/users';
+
+/**
+ * Fetch user profile
+ * @param {string} token
+ */
+export async function getProfile(token) {
+  const res = await fetch(`${AUTH_API_URL}/profile`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Fetch profile failed: ${res.status}`);
+  return res.json();
+}
+
+/**
+ * Update user profile
+ * @param {string} token
+ * @param {{ full_name?: string, phone_number?: string, password?: string }} data
+ */
+export async function updateProfile(token, data) {
+  const res = await fetch(`${AUTH_API_URL}/profile`, {
+    method: 'PUT',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`Update profile failed: ${res.status}`);
+  return res.json();
+}
+
+
+// src/lib/api/field.js
+const FIELD_API_URL = process.env.NEXT_PUBLIC_API_URL + '/fields';
+
+/**
+ * Check availability of a field on a specific date
+ * @param {string} fieldId
+ * @param {string} date YYYY-MM-DD
+ */
+export async function checkFieldAvailability(fieldId, date) {
+  const res = await fetch(
+    `${FIELD_API_URL}/${fieldId}/availability?date=${encodeURIComponent(date)}`
+  );
+  if (!res.ok) throw new Error(`Availability check failed: ${res.status}`);
+  return res.json();
+}
+
+
+// src/lib/api/booking.js
+const BOOKINGS_API_URL = process.env.NEXT_PUBLIC_API_URL + '/bookings';
+
+/**
+ * Create a new booking
+ * @param {string} token
+ * @param {{ field_id: string, booking_date: string, start_time: string, end_time: string, notes?: string }} data
+ */
+export async function createBooking(token, data) {
+  const res = await fetch(BOOKINGS_API_URL, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error(`Create booking failed: ${res.status}`);
+  return res.json();
+}
+
+/**
+ * Get list of user bookings
+ * @param {string} token
+ * @param {{ status?: string, from_date?: string, to_date?: string, page?: number, limit?: number }} params
+ */
+export async function getUserBookings(token, params = {}) {
+  const query = new URLSearchParams();
+  Object.entries(params).forEach(([key, value]) => {
+    if (value !== undefined) query.append(key, String(value));
+  });
+  const res = await fetch(`${BOOKINGS_API_URL}?${query.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Fetch bookings failed: ${res.status}`);
+  return res.json();
+}
+
+/**
+ * Get booking detail by ID
+ * @param {string} token
+ * @param {string} bookingId
+ */
+export async function getBookingById(token, bookingId) {
+  const res = await fetch(`${BOOKINGS_API_URL}/${bookingId}`, {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Fetch booking detail failed: ${res.status}`);
+  return res.json();
+}
+
+/**
+ * Cancel a booking
+ * @param {string} token
+ * @param {string} bookingId
+ */
+export async function cancelBooking(token, bookingId) {
+  const res = await fetch(`${BOOKINGS_API_URL}/${bookingId}/cancel`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error(`Cancel booking failed: ${res.status}`);
+  return res.json();
+}
+
+```
 
 ----
 
