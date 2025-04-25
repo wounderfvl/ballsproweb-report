@@ -265,6 +265,366 @@ PUT
  "message": "Profile updated successfully"
 }
 ```
+
+## Booking Management
+
+### Check Field Availability
+
+**Endpoint**
+
+```plaintext
+/fields/:field_id/availability
+```
+
+**Method**
+
+```plaintext
+GET
+```
+
+**Parameters**
+
+- `date` as string (YYYY-MM-DD format)
+
+
+**Response**
+
+```json
+{
+  "error": false,
+  "message": "Availability retrieved successfully",
+  "data": {
+    "field_id": "field-123abc",
+    "field_name": "Field A",
+    "date": "2023-06-15",
+    "available_slots": [
+      {
+        "start_time": "08:00:00",
+        "end_time": "09:00:00"
+      },
+      {
+        "start_time": "09:00:00",
+        "end_time": "10:00:00"
+      }
+    ],
+    "booked_slots": [
+      {
+        "start_time": "10:00:00",
+        "end_time": "12:00:00"
+      }
+    ]
+  }
+}
+```
+
+### Create Booking
+
+**Endpoint**
+
+```plaintext
+/bookings
+```
+
+**Method**
+
+```plaintext
+POST
+```
+
+**Headers**
+
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+
+**Request Body**
+
+- `field_id` as string
+- `booking_date` as string (YYYY-MM-DD format)
+- `start_time` as string (HH:MM:SS format)
+- `end_time` as string (HH:MM:SS format)
+- `notes` as string, optional
+
+
+**Response**
+
+```json
+{
+  "error": false,
+  "message": "Booking created successfully",
+  "data": {
+    "booking_id": "booking-123abc",
+    "total_amount": 300000,
+    "duration_hours": 2,
+    "payment_methods": [
+      {
+        "method_id": 1,
+        "method_name": "credit_card"
+      },
+      {
+        "method_id": 2,
+        "method_name": "bank_transfer"
+      }
+    ]
+  }
+}
+```
+
+### Get User Bookings
+
+**Endpoint**
+
+```plaintext
+/bookings
+```
+
+**Method**
+
+```plaintext
+GET
+```
+
+**Headers**
+
+- `Authorization: Bearer <token>`
+
+
+**Parameters**
+
+- `status` as string, optional (filter by booking status)
+- `from_date` as string (YYYY-MM-DD format), optional
+- `to_date` as string (YYYY-MM-DD format), optional
+- `page` as integer, optional (default: 1)
+- `limit` as integer, optional (default: 10)
+
+
+**Response**
+
+```json
+{
+  "error": false,
+  "message": "Bookings retrieved successfully",
+  "data": {
+    "bookings": [
+      {
+        "booking_id": "booking-123abc",
+        "field_id": "field-123abc",
+        "field_name": "Field A",
+        "booking_date": "2023-06-15",
+        "start_time": "10:00:00",
+        "end_time": "12:00:00",
+        "duration_hours": 2,
+        "total_amount": 300000,
+        "booking_status": "confirmed",
+        "payment_status": "completed",
+        "created_at": "2023-06-10T00:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "total_items": 5,
+      "total_pages": 1,
+      "current_page": 1,
+      "per_page": 10
+    }
+  }
+}
+```
+
+### Get Booking Detail
+
+**Endpoint**
+
+```plaintext
+/bookings/:booking_id
+```
+
+**Method**
+
+```plaintext
+GET
+```
+
+**Headers**
+
+- `Authorization: Bearer <token>`
+
+
+**Response**
+
+```json
+{
+  "error": false,
+  "message": "Booking retrieved successfully",
+  "data": {
+    "booking_id": "booking-123abc",
+    "user": {
+      "user_id": "user-123abc",
+      "full_name": "John Doe",
+      "phone_number": "1234567890"
+    },
+    "field": {
+      "field_id": "field-123abc",
+      "field_name": "Field A",
+      "image_Endpoint": "https://example.com/images/field-a.jpg"
+    },
+    "booking_date": "2023-06-15",
+    "start_time": "10:00:00",
+    "end_time": "12:00:00",
+    "duration_hours": 2,
+    "total_amount": 300000,
+    "booking_status": "confirmed",
+    "notes": "Please prepare water",
+    "payment": {
+      "payment_id": "payment-123abc",
+      "method": "bank_transfer",
+      "status": "completed",
+      "payment_date": "2023-06-10T12:30:00.000Z"
+    },
+    "points_earned": 30,
+    "created_at": "2023-06-10T00:00:00.000Z",
+    "updated_at": "2023-06-10T12:30:00.000Z"
+  }
+}
+```
+
+### Cancel Booking
+
+**Endpoint**
+
+```plaintext
+/bookings/:booking_id/cancel
+```
+
+**Method**
+
+```plaintext
+PUT
+```
+
+**Headers**
+
+- `Authorization: Bearer <token>`
+
+
+**Response**
+
+```json
+{
+  "error": false,
+  "message": "Booking cancelled successfully",
+  "data": {
+    "booking_id": "booking-123abc",
+    "refund_status": "processing",
+    "refund_amount": 270000
+  }
+}
+```
+
+### Get All Bookings (Admin Only)
+
+**Endpoint**
+
+```plaintext
+/admin/bookings
+```
+
+**Method**
+
+```plaintext
+GET
+```
+
+**Headers**
+
+- `Authorization: Bearer <token>`
+
+
+**Parameters**
+
+- `status` as string, optional (filter by booking status)
+- `field_id` as string, optional
+- `user_id` as string, optional
+- `from_date` as string (YYYY-MM-DD format), optional
+- `to_date` as string (YYYY-MM-DD format), optional
+- `page` as integer, optional (default: 1)
+- `limit` as integer, optional (default: 10)
+
+
+**Response**
+
+```json
+{
+  "error": false,
+  "message": "Bookings retrieved successfully",
+  "data": {
+    "bookings": [
+      {
+        "booking_id": "booking-123abc",
+        "user": {
+          "user_id": "user-123abc",
+          "full_name": "John Doe"
+        },
+        "field": {
+          "field_id": "field-123abc",
+          "field_name": "Field A"
+        },
+        "booking_date": "2023-06-15",
+        "start_time": "10:00:00",
+        "end_time": "12:00:00",
+        "total_amount": 300000,
+        "booking_status": "confirmed",
+        "payment_status": "completed",
+        "created_at": "2023-06-10T00:00:00.000Z"
+      }
+    ],
+    "pagination": {
+      "total_items": 25,
+      "total_pages": 3,
+      "current_page": 1,
+      "per_page": 10
+    }
+  }
+}
+```
+
+### Update Booking Status (Admin Only)
+
+**Endpoint**
+
+```plaintext
+/admin/bookings/:booking_id/status
+```
+
+**Method**
+
+```plaintext
+PUT
+```
+
+**Headers**
+
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+
+**Request Body**
+
+- `booking_status` as string (pending, confirmed, completed, cancelled)
+- `notes` as string, optional
+
+
+**Response**
+
+```json
+{
+  "error": false,
+  "message": "Booking status updated successfully"
+}
+```
+
+------ 
+
+
 ## Screenshots
 ## 1. Sistem Autentikasi
 
