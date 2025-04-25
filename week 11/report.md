@@ -269,19 +269,19 @@ PUT
 ## 1. Sistem Autentikasi
 
 ### Login (3 Level user)
-<img src="login.png">
+[<img src="login.png">](https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2015.04.26.jpeg)
 
 ### Register
-<img src="register.png">
+[<img src="register.png">](https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2015.02.51.jpeg)
 
 ### Register (Super admin)
-<img src="Super admin.png">
+[<img src="Super admin.png">](https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2015.29.29.jpeg)
 
 
 ## 2. Core Feature #1
 
 ### Create Booking
-<img src="Create Booking.png">
+[<img src="Create Booking.png">](https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2015.21.19.jpeg)
 
 #### Form booking
 
@@ -371,11 +371,11 @@ export default function BookingPage() {
 
 ## Screenshots Tampilan Login & Register
 
-<img src="uilogin.png">
+[<img src="uilogin.png">](https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2016.13.09.jpeg)
 
-<img src="uiregister.png">
+[<img src="uiregister.png">](https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2016.13.09%20(2).jpeg)
 
-<img src="uiwelcome.png">
+[<img src="uiwelcome.png">](https://raw.githubusercontent.com/wounderfvl/ballsproweb-report/refs/heads/main/week%2011/WhatsApp%20Image%202025-04-25%20at%2016.13.09%20(1).jpeg)
 
 ## 3. Integration Test
 
