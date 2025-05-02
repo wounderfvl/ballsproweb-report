@@ -17,7 +17,7 @@
 ---
 
 ## Progress Summary
-Minggu ini tim telah berhasil mengimplementasikan bebrapa sistem manajemen dan fitur utama yang dibutuhkan oleh stakeholder. Tim frontend telah menyelesaikan implementasi fitur inti berupa sistem booking multi-step, autentikasi pengguna, dan dashboard navigasi. Proses booking memungkinkan pengguna memilih lapangan, tanggal, dan waktu secara interaktif hingga tahap konfirmasi dan pembayaran (mock UI). Sistem autentikasi mendukung sign-in dan sign-up dengan validasi, serta opsi tambahan untuk kenyamanan pengguna. Dashboard menyediakan akses cepat ke fitur utama. Fitur tambahan berupa penambahan pemain saat booking juga telah tersedia, meskipun belum terhubung ke backend. Pencapaian utama meliputi:
+Minggu ini tim telah berhasil mengimplementasikan bebrapa sistem manajemen dan fitur utama yang dibutuhkan oleh stakeholder. Tim frontend telah menyelesaikan implementasi fitur inti berupa sistem booking multi-step, autentikasi pengguna, dan dashboard navigasi. Proses booking memungkinkan pengguna memilih lapangan, tanggal, dan waktu secara interaktif hingga tahap konfirmasi dan pembayaran (mock UI). Sistem autentikasi mendukung sign-in dan sign-up dengan validasi, serta opsi tambahan untuk kenyamanan pengguna. Dashboard menyediakan akses cepat ke fitur utama. Fitur tambahan berupa penambahan pemain saat booking juga telah tersedia, meskipun belum terhubung ke backend. Dan dari backend, backend sudah mengimplementasikan paymment dan program loyalty. Database, dan struktur folder backend dengan arsitektur modular (routes, controllers, models) sudah di setup. Pencapaian utama frontend meliputi:
 
 1. **Step Management**:
 - Menambahkan status langkah untuk mengelola langkah saat ini (1 untuk pemesanan, 2 untuk mengonfirmasi detail, 3 untuk pembayaran).
@@ -101,9 +101,9 @@ Minggu ini tim telah berhasil mengimplementasikan bebrapa sistem manajemen dan f
 - Booking system, autentikasi, dashboard, dan fitur tambah pemain (FE).
 
 **Khanza Nabilla Tsabita (Backend)**:
-- Backend architecture;
-- Resource implementation;
-- Authentication system.
+- Pengembangan fitur booking lapangan dengan validasi ketersediaan,
+ - Integrasi database PostgreSQL (setup koneksi dan migrasi awal untuk payment dan program loyalty),
+ - Implementasi endpoint payment dan loyalty (read & redeem points, admin program).
 
 ## Screenshots / Demo Core Feature
 
