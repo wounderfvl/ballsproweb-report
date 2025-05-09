@@ -19,13 +19,13 @@
 ## Progress Summary
 Pada minggu ini, tim frontend telah fokus mengembangkan dan menyelesaikan menu utama pada role admin termasuk dashboard terkait sistem loyalty dan manajemen booking. Fitur-fitur baru meliputi tampilan dashboard admin, manajemen program loyalty untuk admin, serta menyelesaikan core featur#4 halaman loyalty pengguna. Dan dari backend, backend sudah mengimplementasikan  fitur baru seperti manajemen akun admin oleh super admin dan laporan statistik booking & loyalty. Database, dan struktur folder backend dengan arsitektur modular (routes, controllers, models) sudah di setup. Pencapaian utama minggu ini meliputi:
 
-### Laporan Statistik & Analitik
+### 1. Laporan Statistik & Analitik
 Kami telah mengimplementasikan fitur laporan booking dan program loyalty yang dapat diakses oleh admin dan super admin. Laporan mencakup filter tanggal dan lapangan, jumlah pemesanan, pendapatan, serta kinerja program loyalti. Selain itu, super admin juga dapat melihat ringkasan statistik sistem seperti pertumbuhan pengguna, performa lapangan, dan program loyalti secara keseluruhan.
 
-### Admin Panel
+### 2. Admin Panel
 Fitur dashboard untuk admin dan super admin telah dibuat untuk memudahkan pengelolaan data seperti booking, program loyalti, serta manajemen lapangan. Admin dapat melakukan approval, penjadwalan ulang, atau membatalkan booking melalui panel ini. Super admin juga dapat mengelola akun admin lain melalui fitur CRUD manajemen user.
 
-### Visualisasi Data
+### 3. Visualisasi Data
 Untuk mendukung pemantauan data secara interaktif, kami menambahkan visualisasi data dalam bentuk grafik tren booking (harian, mingguan, bulanan), distribusi penukaran poin program loyalti. Hal ini memudahkan admin dan super admin dalam membaca performa sistem secara keseluruhan.
 
 ## Accomplished Tasks
@@ -313,6 +313,7 @@ GET
 - Membuat laporan MD.
 
 **Dahayu Azhka Daeshawnda (Frontend)**:
+- Frontend development (React components) & State management,
 - Pembuatan UI Admin Dashboard, Admin Loyalty, dan Pengguna Loyalty
 
 **Khanza Nabilla Tsabita (Backend)**:
