@@ -336,7 +336,7 @@ GET
 
 - #### Booking
 
-```json
+```js
 ///reportController.js
 async generateBookingReport(req, res, next) {
     try {
@@ -373,7 +373,7 @@ async generateBookingReport(req, res, next) {
 
 - #### Loyalty
 
-```json
+```js
 ///reportController.js
 async generateLoyaltyReport(req, res, next) {
     try {
