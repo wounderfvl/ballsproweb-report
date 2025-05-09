@@ -335,75 +335,77 @@ GET
 ### Laporan statistik
 
 - #### Booking
-    ```json
-    ///reportController.js
-    async generateBookingReport(req, res, next) {
-        try {
-        const { from_date, to_date, field_id, format = "json" } = req.query
 
-        if (!from_date || !to_date) {
-            return res.status(400).json(responseFormatter.error("From date and to date are required", "VALIDATION_ERROR"))
-        }
+```json
+///reportController.js
+async generateBookingReport(req, res, next) {
+    try {
+    const { from_date, to_date, field_id, format = "json" } = req.query
 
-        // Generate report
-        const report = await bookingModel.generateReport({
-            from_date,
-            to_date,
-            field_id,
-        })
-
-        // Handle different formats
-        if (format === "json") {
-            return res.status(200).json(responseFormatter.success("Booking report generated successfully", report))
-        } else if (format === "csv") {
-            // Implementation for CSV format would go here
-            return res.status(501).json(responseFormatter.error("CSV format not implemented yet", "NOT_IMPLEMENTED"))
-        } else if (format === "pdf") {
-            // Implementation for PDF format would go here
-            return res.status(501).json(responseFormatter.error("PDF format not implemented yet", "NOT_IMPLEMENTED"))
-        } else {
-            return res.status(400).json(responseFormatter.error("Invalid format parameter", "VALIDATION_ERROR"))
-        }
-        } catch (error) {
-        next(error)
-        }
+    if (!from_date || !to_date) {
+        return res.status(400).json(responseFormatter.error("From date and to date are required", "VALIDATION_ERROR"))
     }
-    ```
+
+    // Generate report
+    const report = await bookingModel.generateReport({
+        from_date,
+        to_date,
+        field_id,
+    })
+
+    // Handle different formats
+    if (format === "json") {
+        return res.status(200).json(responseFormatter.success("Booking report generated successfully", report))
+    } else if (format === "csv") {
+        // Implementation for CSV format would go here
+        return res.status(501).json(responseFormatter.error("CSV format not implemented yet", "NOT_IMPLEMENTED"))
+    } else if (format === "pdf") {
+        // Implementation for PDF format would go here
+        return res.status(501).json(responseFormatter.error("PDF format not implemented yet", "NOT_IMPLEMENTED"))
+    } else {
+        return res.status(400).json(responseFormatter.error("Invalid format parameter", "VALIDATION_ERROR"))
+    }
+    } catch (error) {
+    next(error)
+    }
+}
+```
 
 - #### Loyalty
-    ```json
-    ///reportController.js
-    async generateLoyaltyReport(req, res, next) {
-        try {
-        const { from_date, to_date, format = "json" } = req.query
 
-        if (!from_date || !to_date) {
-            return res.status(400).json(responseFormatter.error("From date and to date are required", "VALIDATION_ERROR"))
-        }
+```json
+///reportController.js
+async generateLoyaltyReport(req, res, next) {
+    try {
+    const { from_date, to_date, format = "json" } = req.query
 
-        // Generate report
-        const report = await loyaltyModel.generateReport({
-            from_date,
-            to_date,
-        })
-
-        // Handle different formats
-        if (format === "json") {
-            return res.status(200).json(responseFormatter.success("Loyalty program report generated successfully", report))
-        } else if (format === "csv") {
-            // Implementation for CSV format would go here
-            return res.status(501).json(responseFormatter.error("CSV format not implemented yet", "NOT_IMPLEMENTED"))
-        } else if (format === "pdf") {
-            // Implementation for PDF format would go here
-            return res.status(501).json(responseFormatter.error("PDF format not implemented yet", "NOT_IMPLEMENTED"))
-        } else {
-            return res.status(400).json(responseFormatter.error("Invalid format parameter", "VALIDATION_ERROR"))
-        }
-        } catch (error) {
-        next(error)
-        }
+    if (!from_date || !to_date) {
+        return res.status(400).json(responseFormatter.error("From date and to date are required", "VALIDATION_ERROR"))
     }
-    ```
+
+    // Generate report
+    const report = await loyaltyModel.generateReport({
+        from_date,
+        to_date,
+    })
+
+    // Handle different formats
+    if (format === "json") {
+        return res.status(200).json(responseFormatter.success("Loyalty program report generated successfully", report))
+    } else if (format === "csv") {
+        // Implementation for CSV format would go here
+        return res.status(501).json(responseFormatter.error("CSV format not implemented yet", "NOT_IMPLEMENTED"))
+    } else if (format === "pdf") {
+        // Implementation for PDF format would go here
+        return res.status(501).json(responseFormatter.error("PDF format not implemented yet", "NOT_IMPLEMENTED"))
+    } else {
+        return res.status(400).json(responseFormatter.error("Invalid format parameter", "VALIDATION_ERROR"))
+    }
+    } catch (error) {
+    next(error)
+    }
+}
+```
 
 #### Frontend Implementation
 
