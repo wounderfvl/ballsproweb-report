@@ -323,13 +323,17 @@ GET
 
 ## 1. Screenshots / Demo Core Feature
 
-### 
-<img src="">
+### Dashboard manajemen pemesanan Lapangan
+<img src="https://github.com/wounderfvl/ballsproweb-report/blob/main/Week%2013/Dashboard%20manajemen%20pemesanan%20Lapangan.jpeg">
 
+### Tampilan create dalam manajemen pemesanan lapangan
+<img src="https://github.com/wounderfvl/ballsproweb-report/blob/main/Week%2013/Tampilan%20create%20dalam%20manajemen%20pemesanan%20lapangan.jpeg">
 
-### 
-<img src="">
+### Loyalty Management (Manajemen menu hadiah)
+<img src="https://github.com/wounderfvl/ballsproweb-report/blob/main/Week%2013/Loyalty%20Management%20(Manajemen%20menu%20hadiah).jpeg">
 
+### Loyalty Management (Manajemen loyalty points)
+<img src="https://github.com/wounderfvl/ballsproweb-report/blob/main/Week%2013/Loyalty%20Management%20(Manajemen%20loyalty%20points).jpeg">
 
 ## 2. Core Feature
 ### Laporan statistik
