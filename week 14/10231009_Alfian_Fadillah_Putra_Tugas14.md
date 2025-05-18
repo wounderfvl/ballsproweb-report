@@ -55,15 +55,378 @@ Pada minggu ini, tim telah berhasil menyelesaikan beberapa tampilan antarmuka pe
 
 ### Unit Testing
 1. **Autentikasi (Login)**:
+```tsx
+import { render, screen, fireEvent } from '@testing-library/react';
+import SignInPage from './page';
+import { useAuth } from '../../../contexts';
+import { useRouter } from 'next/navigation';
 
+// Mock context dan router
+jest.mock('../../../contexts', () => ({
+  useAuth: () => ({
+    login: jest.fn(),
+    isLoading: false,
+    error: null,
+  }),
+}));
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn() }),
+}));
+
+describe('SignInPage', () => {
+  it('menampilkan pesan error kalau email atau password kosong', () => {
+    render(<SignInPage />);
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+    expect(screen.getByText('Email and password are required')).toBeInTheDocument();
+  });
+
+  it('memanggil login dan redirect kalau input valid', async () => {
+    const { login } = useAuth();
+    const { push } = useRouter();
+    render(<SignInPage />);
+
+    fireEvent.change(screen.getByPlaceholderText('Your Email'), {
+      target: { value: 'a@b.com' }
+    });
+    fireEvent.change(screen.getByPlaceholderText('Your Password'), {
+      target: { value: 'secret' }
+    });
+    fireEvent.click(screen.getByRole('button', { name: /sign in/i }));
+
+    expect(login).toHaveBeenCalledWith('a@b.com', 'secret');
+    // Anda bisa tunggu promise dan cek push dipanggil
+    // await waitFor(() => expect(push).toHaveBeenCalledWith('/dashboard'));
+  });
+});
+```
 
 2. **CRUD Admin (oleh Super Admin)**:
+```tsx
+import React from 'react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import SuperAdminDashboard from '../page'
+import * as nextNavigation from 'next/navigation'
 
+// --- 1) Mock useRouter dari next/navigation ---
+const pushMock = jest.fn()
+jest.spyOn(nextNavigation, 'useRouter').mockImplementation(() => ({
+  push: pushMock,
+} as any))
+
+// --- 2) Mock komponen anak: AdminList & AddAdminForm ---
+jest.mock('@/components/admin/superadmin/AdminList', () => (props: any) => (
+  <div data-testid="admin-card">
+    <span>{props.admin.name}</span>
+    <button data-testid="edit-btn" onClick={() => props.onEdit()}></button>
+    <button data-testid="delete-btn" onClick={() => props.onDelete()}></button>
+    <button data-testid="verify-btn" onClick={() => props.onVerify()}></button>
+  </div>
+))
+jest.mock('@/components/admin/superadmin/AddAdmminForm', () => (props: any) => (
+  <div data-testid="add-form">
+    {/* Simulasikan form dengan dua input */}
+    <input
+      data-testid="name-input"
+      defaultValue={props.initialData?.name || ''}
+      placeholder="Name"
+      onChange={e => (props.initialData = { ...props.initialData, name: e.target.value })}
+    />
+    <input
+      data-testid="email-input"
+      defaultValue={props.initialData?.email || ''}
+      placeholder="Email"
+      onChange={e => (props.initialData = { ...props.initialData, email: e.target.value })}
+    />
+    <button
+      data-testid="submit-btn"
+      onClick={() =>
+        props.onSubmit(
+          props.initialData || { name: 'New Admin', email: 'new@example.com' }
+        )
+      }
+    ></button>
+    <button data-testid="cancel-btn" onClick={props.onCancel}></button>
+  </div>
+))
+
+describe('SuperAdminDashboard CRUD UI', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    // reset storages
+    sessionStorage.clear()
+    localStorage.clear()
+  })
+
+  it('redirects to /admin/super-admin jika belum login', () => {
+    render(<SuperAdminDashboard />)
+    expect(pushMock).toHaveBeenCalledWith('/admin/super-admin')
+  })
+
+  it('menampilkan daftar admin dari state & localStorage saat authenticated', async () => {
+    // siapkan sessionStorage & localStorage
+    sessionStorage.setItem('superAdminAuthenticated', 'true')
+    localStorage.setItem(
+      'adminUsers',
+      JSON.stringify([
+        { id: 'x', name: 'Foo Admin', email: 'foo@a.com', verified: false },
+      ])
+    )
+
+    render(<SuperAdminDashboard />)
+    // tunggu efek useEffect
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // kartu admin dari localStorage
+    expect(screen.getByText('Foo Admin')).toBeInTheDocument()
+  })
+
+  it('bisa menambah admin baru lewat form', async () => {
+    sessionStorage.setItem('superAdminAuthenticated', 'true')
+    render(<SuperAdminDashboard />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // klik tombol "Tambah Admin"
+    const addBtn = screen.getByRole('button', { name: /Tambah Admin/i })
+    fireEvent.click(addBtn)
+
+    // form muncul
+    expect(screen.getByTestId('add-form')).toBeInTheDocument()
+
+    // isi & submit
+    fireEvent.change(screen.getByTestId('name-input'), { target: { value: 'Zed Admin' }})
+    fireEvent.change(screen.getByTestId('email-input'), { target: { value: 'zed@a.com' }})
+    fireEvent.click(screen.getByTestId('submit-btn'))
+
+    // kartu baru muncul
+    await waitFor(() => {
+      expect(screen.getByText('Zed Admin')).toBeInTheDocument()
+      // juga tersimpan di localStorage
+      const saved = JSON.parse(localStorage.getItem('adminUsers')!)
+      expect(saved.find((a: any) => a.name === 'Zed Admin')).toBeTruthy()
+    })
+  })
+
+  it('bisa mengedit admin yang ada', async () => {
+    sessionStorage.setItem('superAdminAuthenticated', 'true')
+    localStorage.setItem(
+      'adminUsers',
+      JSON.stringify([{ id: '1', name: 'Old Name', email: 'old@a.com', verified: true }])
+    )
+    render(<SuperAdminDashboard />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // klik edit di kartu pertama
+    fireEvent.click(screen.getByTestId('edit-btn'))
+    // form muncul dengan initialData
+    expect(screen.getByTestId('add-form')).toBeInTheDocument()
+
+    // ubah nama & submit
+    fireEvent.change(screen.getByTestId('name-input'), { target: { value: 'Updated Name' }})
+    fireEvent.click(screen.getByTestId('submit-btn'))
+
+    // kartu ter‐update
+    await waitFor(() => {
+      expect(screen.getByText('Updated Name')).toBeInTheDocument()
+      const saved = JSON.parse(localStorage.getItem('adminUsers')!)
+      expect(saved[0].name).toBe('Updated Name')
+    })
+  })
+
+  it('bisa menghapus admin', async () => {
+    sessionStorage.setItem('superAdminAuthenticated', 'true')
+    localStorage.setItem(
+      'adminUsers',
+      JSON.stringify([
+        { id: '1', name: 'To Be Deleted', email: 'del@a.com', verified: false },
+      ])
+    )
+    render(<SuperAdminDashboard />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // klik delete
+    fireEvent.click(screen.getByTestId('delete-btn'))
+
+    await waitFor(() => {
+      expect(screen.queryByText('To Be Deleted')).toBeNull()
+      const saved = JSON.parse(localStorage.getItem('adminUsers')!)
+      expect(saved.length).toBe(0)
+    })
+  })
+
+  it('bisa toggle verifikasi admin', async () => {
+    sessionStorage.setItem('superAdminAuthenticated', 'true')
+    localStorage.setItem(
+      'adminUsers',
+      JSON.stringify([
+        { id: '1', name: 'Veri Admin', email: 'veri@a.com', verified: false },
+      ])
+    )
+    render(<SuperAdminDashboard />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // klik verify
+    fireEvent.click(screen.getByTestId('verify-btn'))
+
+    await waitFor(() => {
+      const saved = JSON.parse(localStorage.getItem('adminUsers')!)
+      expect(saved[0].verified).toBe(true)
+    })
+  })
+})
+```
 
 3. **Booking**:
+```tsx
+import React from 'react'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import BookingPage from '../page'
+import * as nextNavigation from 'next/navigation'
 
+// --- Mock useRouter ---
+const pushMock = jest.fn()
+jest.spyOn(nextNavigation, 'useRouter').mockImplementation(() => ({ push: pushMock } as any))
+
+// Mock alert supaya tidak muncul native dialog
+window.alert = jest.fn()
+
+describe('BookingPage flow', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+    sessionStorage.clear()
+    localStorage.clear()
+  })
+
+  it('redirects to /auth/login when not logged in', () => {
+    render(<BookingPage />)
+    expect(pushMock).toHaveBeenCalledWith('/auth/login')
+  })
+
+  it('loads user from localStorage and shows user info', async () => {
+    sessionStorage.setItem('irrelevant', '1')
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ id: 'u1', name: 'Alice', email: 'alice@x.com', phone: '123' })
+    )
+    render(<BookingPage />)
+    // menunggu useEffect
+    await waitFor(() => expect(screen.getByText(/Alice/)).toBeInTheDocument())
+    expect(screen.getByText('alice@x.com')).toBeInTheDocument()
+    expect(screen.getByText('123')).toBeInTheDocument()
+  })
+
+  it('allows selecting field, time, date and enables Confirm Booking', async () => {
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ id: 'u1', name: 'Alice', email: 'alice@x.com', phone: '123' })
+    )
+    render(<BookingPage />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // pilih field pertama
+    const fieldCards = screen.getAllByText('Field A')
+    fireEvent.click(fieldCards[0])
+
+    // pilih time slot 9:00 AM
+    const slot = screen.getByText('9:00 AM')
+    fireEvent.click(slot)
+
+    // pilih tanggal hari ini dalam calendar
+    const today = new Date().getDate().toString()
+    const dateCell = screen.getAllByText(today).find(el => el.className.includes('cursor-pointer'))
+    fireEvent.click(dateCell!)
+
+    // tombol Confirm sekarang enabled
+    const confirmBtn = screen.getByRole('button', { name: /Confirm Booking/i })
+    expect(confirmBtn).not.toBeDisabled()
+  })
+
+  it('prevents booking a slot twice with alert', async () => {
+    // setup existing booking at 9:00 AM today
+    const todayStr = new Date().toISOString().split('T')[0]
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ id: 'u1', name: 'Alice', email: 'alice@x.com', phone: '123' })
+    )
+    localStorage.setItem(
+      'bookings',
+      JSON.stringify([{
+        id: 'b1',
+        field: { id: '1', name: 'Field A', location: 'North Wing' },
+        date: todayStr,
+        time: '9:00 AM',
+        user: {},
+        status: 'pending',
+        createdAt: new Date()
+      }])
+    )
+    render(<BookingPage />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // pilih field/time/date yang sama
+    fireEvent.click(screen.getAllByText('Field A')[0])
+    fireEvent.click(screen.getByText('9:00 AM'))
+    const todayCell = screen.getAllByText(new Date().getDate().toString())
+      .find(el => el.className.includes('cursor-pointer'))
+    fireEvent.click(todayCell!)
+
+    // klik Confirm Booking -> harus munculkan alert
+    fireEvent.click(screen.getByRole('button', { name: /Confirm Booking/i }))
+    expect(window.alert).toHaveBeenCalledWith(
+      'This time slot is already booked. Please select another time.'
+    )
+  })
+
+  it('advances to step 2 then step 3 and on confirm payment saves booking and redirects', async () => {
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ id: 'u1', name: 'Alice', email: 'alice@x.com', phone: '123' })
+    )
+    render(<BookingPage />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    // Step 1 selections
+    fireEvent.click(screen.getAllByText('Field B')[0])
+    fireEvent.click(screen.getByText('11:00 AM'))
+    fireEvent.click(screen.getAllByText(new Date().getDate().toString())[0])
+
+    fireEvent.click(screen.getByRole('button', { name: /Confirm Booking/i }))
+    // sekarang tampil Step 2
+    expect(screen.getByText(/Confirm Your Booking/i)).toBeInTheDocument()
+
+    // lanjut ke pembayaran
+    fireEvent.click(screen.getByRole('button', { name: /Proceed to Payment/i }))
+    expect(screen.getByText(/Proceed Payment/i)).toBeInTheDocument()
+
+    // confirm payment
+    fireEvent.click(screen.getByRole('button', { name: /Confirm Payment/i }))
+    await waitFor(() => {
+      // redirect
+      expect(pushMock).toHaveBeenCalledWith('/pengguna/booking/upload-payment')
+      // booking tersimpan
+      const all = JSON.parse(localStorage.getItem('bookings')!)
+      expect(all.some((b: any) => b.time === '11:00 AM')).toBe(true)
+    })
+  })
+
+  it('toggles booking history panel', async () => {
+    localStorage.setItem(
+      'user',
+      JSON.stringify({ id: 'u1', name: 'Alice', email: 'alice@x.com', phone: '123' })
+    )
+    render(<BookingPage />)
+    await waitFor(() => expect(screen.queryByText('Loading...')).toBeNull())
+
+    const toggleBtn = screen.getByRole('button', { name: /Show Booking History/i })
+    fireEvent.click(toggleBtn)
+    expect(screen.getByText(/Booking History/i)).toBeInTheDocument()
+    fireEvent.click(toggleBtn)
+    expect(screen.queryByText(/Booking History/i)).toBeNull()
+  })
+})
+```
 
 ### Bugfix Report
+-
 
 ### 
 
@@ -90,11 +453,6 @@ Pada minggu ini, tim telah berhasil menyelesaikan beberapa tampilan antarmuka pe
 
 ## Screenshots / Demo Core Feature
 
-### 
-<img src="">
-
-
-
 ---
 
 ## 2. Core Feature
@@ -116,10 +474,28 @@ Pada minggu ini, tim telah berhasil menyelesaikan beberapa tampilan antarmuka pe
 <img src="Super Admin Authentication.jpeg">
 
 ### 3. Deployment Plan
+Kami merencanakan mendeploy di vercel.com dengan backend service supabase
+
 ### 3.1 Hosting? domain? dll
+- Deployment: vercel.com
+- Backend Service: supabase.com
+- Domain: https://balls.vercel.app
+
+Alternatif: VPS Hosting di domanesia
 
 
 ### 3.2 Lorem ipsum Flow Testing
+```
+User Input
+     ↓
+Middleware (Auth & Validation)
+     ↓
+Backend Logic (Controllers / Services)
+     ↓
+Database / Storage
+     ↓
+Response dikirim ke User
+```
 
 
 ----
