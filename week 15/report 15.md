@@ -132,7 +132,8 @@ BALLS adalah sistem digitalisasi pemesanan lapangan dan program loyalti untuk mi
 ---
 
 ## 📁 Dokumentasi Terpisah
-- [README.md].(https://github.com/x3naline/balls-backdoor/blob/main/README.md)
+- README.md
+- [README.md](README.md)
 - [API-docs.md].(https://github.com/AchmadLyraa/-prowebdevops/blob/main/API%20Documentation.md)
 - `user-manual.md` → /docs/user-manual.md    ---- blm ----
 
