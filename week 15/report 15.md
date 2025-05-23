@@ -131,10 +131,10 @@ BALLS adalah sistem digitalisasi pemesanan lapangan dan program loyalti untuk mi
 
 ---
 
-## 📁 Dokumentasi Terpisah  ---- blm ----
-- `README.md` → /docs/README.md  
+## 📁 Dokumentasi Terpisah
+- [README.md].(https://github.com/x3naline/balls-backdoor/blob/main/README.md)
 - [API-docs.md].(https://github.com/AchmadLyraa/-prowebdevops/blob/main/API%20Documentation.md)
-- `user-manual.md` → /docs/user-manual.md  
+- `user-manual.md` → /docs/user-manual.md    ---- blm ----
 
 ## 💻 Source Code  ---- blm ----
 **Repository:** [GitHub](https://github.com/brosora6/sora.git)  
@@ -166,17 +166,16 @@ sora/
 
 ## 🚀 Setup Project  ---- blm ----
 ```bash
-git clone https://github.com/brosora6/sora.git
-cd sora
-composer install
+git clone https://github.com/namakamu/balls-backdoor.git ????
+cd balls-backdoor/backend ????
 npm install
 cp .env.example .env
-php artisan key:generate
-php artisan migrate --seed
-composer run dev
+npm run migrate:up     # Jalankan migrasi database (jika pakai pgm)
+npm run dev            # Jalankan dalam mode development
+
 ```
 
-## 📝 Release Notes - Final (23/05/2025)  ---- blm ----
+## 📝 Release Notes - Final (23/05/2025)  ---- blm / ga perlu?----
 - Initial release  
 - Deploy Cpanel  
 - Full fitur manajemen restoran  
@@ -185,8 +184,5 @@ composer run dev
 - Reservasi meja  
 - Pembayaran  
 - Dokumentasi  
-
-## 🌐 Aplikasi Ter-deploy
-[https://sorasalwa.web.id](https://sorasalwa.web.id)
 
 ---
