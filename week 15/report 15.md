@@ -91,34 +91,19 @@ BALLS adalah sistem digitalisasi pemesanan lapangan dan program loyalti untuk mi
 - `POST /auth/login`
 
 #### Booking
-- `GET /api/bookings`  
-- `POST /api/bookings`  
-- `PUT /api/bookings/:id`  
-- `DELETE /api/bookings/:id`
+- `GET /bookings`  
+- `POST /bookings`  
+- `PUT /bookings/:id`  
+- `DELETE /bookings/:id`
 
 #### Payment
-- `GET /categories`  
-- `POST /categories`  
-- `GET /categories/{category}`  
-- `PUT /categories/{category}`  
-- `DELETE /categories/{category}`
-
-#### Keranjang
-- `GET /carts`  
-- `POST /carts`  
-- `PUT /carts/{cart}`
-
-#### Reservasi
-- `GET /reservations`  
-- `POST /reservations`  
-- `GET /reservations/{reservation}`  
-- `PUT /reservations/{reservation}`  
-- `DELETE /reservations/{reservation}`
-
-#### Pembayaran
 - `GET /payments`  
 - `POST /payments`  
-- `GET /payments/{payment}`
+
+#### Loyalty
+- `GET /loyalty`  
+- `POST /loyalty/redeem`  
+
 
 ---
 
@@ -148,7 +133,7 @@ BALLS adalah sistem digitalisasi pemesanan lapangan dan program loyalti untuk mi
 
 ## 📁 Dokumentasi Terpisah  ---- blm ----
 - `README.md` → /docs/README.md  
-- `API-docs.md` → /docs/API-docs.md  
+- [API-docs.md].(https://github.com/AchmadLyraa/-prowebdevops/blob/main/API%20Documentation.md)
 - `user-manual.md` → /docs/user-manual.md  
 
 ## 💻 Source Code  ---- blm ----
